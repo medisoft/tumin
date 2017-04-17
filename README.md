@@ -47,6 +47,7 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
     + A transaction with an input link and 7 output links is a complete transaction, every transaction that has an input but less than 7 out links is not completed.
 * Weight
     + The amount of luck spent. Starts in 0 for genesis transactions and 1 for other ones.
+    + The minimum amount of validation transactions are 2. Weight equals to 3^(NumValidatedTransactions-2)
 * Accumulated weight
     + The sum of all the weights for the longest path to the genesis for a new transaction.
     
@@ -140,27 +141,73 @@ A mint transaction is confirmated once the mint claim transaction is confirmed
 The issuer of the transaction must have an input of funds, an output for funds and the key to approve that input of funds.
 
 ```json
-TX = {
-  'TXID': 'sha256OfTXData',
-  'TXData': {
-    'type': 'TransactionTypeIdentifier',
-    'timestamp': 'UnixTimeStampWithMilliseconds',
-    'inputs': ['TXID_1','TXID_2',...],
-    'outputs': [
+{
+  "TXID": "sha256OfTXData",
+  "TXData": {
+    "type": "TransactionTypeIdentifier",
+    "timestamp": "UnixTimeStampWithMilliseconds",
+    "inputs": ["TXID_1","TXID_2",...],
+    "outputs": [
       {
-        'address': 'addressOfReceiver',
-        'amount': 'amountToReceive'
+        "address": "addressOfReceiver",
+        "amount": "amountToReceive"
       },....
     ],
-    'script': 'optionalBytecodeForSmartContract'
+    "script": "optionalBytecodeForSmartContract"
   },
-  'ValidatesTXs': ['ArrayOfTXIDsThatValidates'],
-  'hash': 'sha256OfEverythingExceptTheHashAndSignature',
-  'signature': 'signatureOfTXData_by_all_the_required_keys'
+  "ValidatesTXs": ["ArrayOfTXIDsThatValidates"],
+  "hash": "sha256OfEverythingExceptTheHashAndSignature",
+  "signature": "signatureOfTXData_by_all_the_required_keys"
 }
 ```
 
 A transfer transaction could be accepted after first validation, but it is recommended that it is a completed transaction with the 7 links.
+
+### Spam transaction
+
+When there are not TX to validate a new transaction it is easier to do some work to find a nonce that generates a new TXID that could be added to the tangle and be used as a new option for another transaction.
+
+This could be at the begining of a tangle or when there are low amount of new transactions.
+
+It simply generates a basic transaction and adds a nonce like this example:
+
+```json
+{
+  "TXID": "sha256OfTXData",
+  "TXData": {
+    "type": "TransactionTypeIdentifier",
+    "timestamp": "UnixTimeStampWithMilliseconds",
+    "nonce": "numberThatFormsTheNonce",
+  },
+  "ValidatesTXs": ["ArrayOfTXIDsThatValidates"],
+  "hash": "sha256OfEverythingExceptTheHashAndSignature",
+  "signature": "signatureOfTXData_by_all_the_required_keys"
+}
+```
+
+
+### Adding a transaction to the tangle
+
+To be able to add a transaction to the tangle it must fulfill these condition:
+
+* The timestamp must be equal to the receiver node timestamp and to the timestamp of the TX it is validating.
+* The TXID of the validated transactions must be fulfill the rules for validation intervals.
+* The inputs spent must be registered as unspent in the receiver node.
+* The total amount of input coins must be spent and sent to another recipient
+* The recipient addresses must not be used in any other place
+* The to validate transactions must not be already completed
+* Should be sent to all the neighbors
+
+### Selection of to validate transactions
+
+The transaction issuer must have a list of incomplete transactions to find valid transactions there.
+
+The list must be grouped and descendent sorted by weight, and then sorted by random.
+ 
+Then the issuer must run the algorithm for finding valid transactions. If it don't find valid transactions, it should 
+ask for more transactions to the node, to their neighbors and if after that it can't validate its transaction then it can
+wait more time until newer transaction list comes, or start creating spam transactions to increase the pool of to validate transactions.
+
 
 
 ### Known possible problems
