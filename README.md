@@ -227,6 +227,7 @@ Then the issuer must run the algorithm for finding valid transactions. If it don
 ask for more transactions to the node, to their neighbors and if after that it can't validate its transaction then it can
 wait more time until newer transaction list comes, or start creating spam transactions to increase the pool of to validate transactions.
 
+The transactions must be checked to certain depth, at least 7 days depth and check the signatures and the correct validation of its validated transactions.
 
 
 ### Known possible problems
