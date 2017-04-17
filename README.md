@@ -78,24 +78,27 @@ The validation algorithm uses:
 
 I think is better to write an algorithm in pseudo code, so here it is.
 
-let t = 10000
-let Min = 0
-let Max = 2^256-1
+```javascript
+let t = 10000;
+let Min = 0;
+let Max = 2^256-1;;
 let T = AverageNumberOfTransactionsPerPeriodLast24Hours()
-let TXID = sha256(TransactionData)
-let Luck = 1 / T
-let LowEnd = TXID - ((TXID-Min) * (Luck/2))
-let HighEnd = TXID + ((Max-TXID) * (Luck/2))
-let TXIDs = Array(Group of non validated TXIDs)
-forEach(TXIDs as txid) 
-    if txid >= LowEnd AND txid <= HighEnd then
-        if !ValidTX1 then ValidTX1=txid else ValidTX2=txid
-        if ValidTX1 AND ValidTX2 then
-            ValidateTransaction(ValidTX1, ValidTX2, TransactionData)
+let TXID = sha256(TransactionData);
+let Luck = 1 / T;
+let LowEnd = TXID - ((TXID-Min) * (Luck/2));
+let HighEnd = TXID + ((Max-TXID) * (Luck/2));
+RepeatUntil
+    let TXIDs = Array(Group of non validated TXIDs)
+    forEach(TXIDs as txid) 
+        if txid >= LowEnd AND txid <= HighEnd then
+            if !ValidTX1 then ValidTX1=txid else ValidTX2=txid
+            if ValidTX1 AND ValidTX2 then
+                ValidateTransaction(ValidTX1, ValidTX2, TransactionData)
+            endif
         endif
-    endif
-endForEach
-
+    endForEach
+RepeatUntil TransactionValidated
+```
 
 
 #### We took ideas from
