@@ -101,6 +101,74 @@ RepeatUntil TransactionValidated
 ```
 
 
+### Minting
+
+The absolute max Tumins are going to be 
+```math
+MSupply = 2^64-1
+```
+ 
+The base reward for every minting transaction
+```math
+BaseReward = (MSupply − A) >> 18
+```
+
+A minting transaction is basically a bet. The issuer of the mint transaction bets that the sha256 of all the TXIDs since it places the mint transaction until someone places a bet transaction (24 hours later at least) is going to have the lower difference from a random number into the mint transaction.
+
+A mint transaction encrypts the bet random number with a aes256 algorithm with an strong random key, then the transaction is added to the tangle with at least one of its input links that have a direct route the main genesis transaction.
+
+24 hour later other full node could place a bet transaction, that is only a guess of what would result when hashing all the TXIDs since the mint transaction plus the number that the mint transaction contains encrypted.
+
+The bet transaction must come with an amount of coins equal to 1% of the BaseReward claimed by the mint transaction.
+
+There are another 24 hours for placing the bet transactions. After that, no more bet transactions to that mint transaction could be added.
+ 
+The bet transaction must have a direct path to the mint transaction.
+
+After 24 hours from the end of betting, the minting node could place a mint claim transaction, that includes the key used to encrypt the mint transaction.
+
+Then, if the number issued by the minting node is the nearest to the hash, it receives the reward and the funds in bets by other transactions are released to their original owner.
+
+If the number of one of the bets is the nearest, then it receives all the amount of the bets, and the reward is not issued to anyone.
+
+If the minting node does not issues the mint claim transaction on time, then all the funds in bets are released and the minting node loses the the right to claim the coins.
+
+A mint transaction is confirmated once the mint claim transaction is confirmed
+
+### Transfer
+
+The issuer of the transaction must have an input of funds, an output for funds and the key to approve that input of funds.
+
+```json
+TX = {
+  TXID: sha256OfTXData,
+  TXData: {
+    type: TransactionTypeIdentifier,
+    timestamp: UnixTimeStampWithMilliseconds,
+    inputs: ['TXID_1','TXID_2',...],
+    outputs: [
+      {
+        address: addressOfReceiver,
+        amount: amountToReceive
+      },....
+    ],
+    script: optionalBytecodeForSmartContract
+  },
+  ValidatesTXs: [ArrayOfTXIDsThatValidates],
+  hash: sha256OfEverythingExceptTheHashAndSignature,
+  signature: signatureOfTXData_by_all_the_required_keys
+}
+```
+
+A transfer transaction could be accepted after first validation, but it is recommended that it is a completed transaction with the 7 links.
+
+
+### Known possible problems
+
+* Double spending
+    + It could be double spending in two tangles at some time. The double spending risk can be reduced checking that the transaction has validations from many other tangles
+
 #### We took ideas from
 * Iota Tangle
 * Bitcoin
+* Monero
