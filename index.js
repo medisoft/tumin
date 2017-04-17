@@ -5,8 +5,10 @@ var bigint = require('bigintjs'),
     request = require('request-promise');
 
 // var MSupply = bignum.pow(2,64).sub(1).toString(10);
+var MSupply = bignum.pow(2,53).sub(1).div(bignum.pow(10,14)).toString(10);
+// var MSupply = bignum.pow(2,64).sub(1).div(bignum.pow(10,13)).toString(10);
+console.log(MSupply);
 // 703,687.4417 7663
-// console.log(MSupply);
 var max = bignum('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
 var min = bignum('0000000000000000000000000000000000000000000000000000000000000000', 16);
 var txPerBlock = 20;

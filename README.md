@@ -75,7 +75,17 @@ To validate a transaction it must fulfill validation algorithm.
 
 If the node created a new spam transaction it should adjust its nonce to fulfill the validation algorithm.
 
+A node could be of three types:
 
+* Light node, that has no information about the tangle, and require to connect to an external provider to issue and receive transactions.
+    + Must have connection to at least 3 providers and broadcast every transaction to all of them.
+* Half node, that has partial information about the tangles. 
+    + It could be configurable the number of tangles that has into its database
+    + If it reaches the max number of tangles stored, then flushes not accessed ones to allow newer tangles to come into the database
+    + It must have connection to at least 7 neighbors
+* Full node, that tries to have all the information about all the tangles.
+    + It mus have connection to at least 49 neighbors and save all the tangle information it receives from them
+    
 ### Validation algorithm
 
 The validation algorithm uses:
@@ -115,7 +125,7 @@ RepeatUntil TransactionValidated
 
 The absolute max Tumins are going to be 
 ```math
-MSupply = 2^64-1
+MSupply = 2^53-1
 ```
  
 The base reward for every minting transaction
@@ -186,7 +196,7 @@ It simply generates a basic transaction and adds a nonce like this example:
   "TXData": {
     "type": "TransactionTypeIdentifier",
     "timestamp": "UnixTimeStampWithMilliseconds",
-    "nonce": "numberThatFormsTheNonce",
+    "nonce": "numberThatFormsTheNonce"
   },
   "ValidatesTXs": ["ArrayOfTXIDsThatValidates"],
   "hash": "sha256OfEverythingExceptTheHashAndSignature",
@@ -228,3 +238,9 @@ wait more time until newer transaction list comes, or start creating spam transa
 * [Iota Tangle](http://iotatangle.com)
 * [Bitcoin](http://bitcoin.org)
 * [Monero](http://getmonero.org)
+
+#### References
+[Max Safe Integer in Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)
+
+### Author
+Mario Alberto Medina Nussbaum
