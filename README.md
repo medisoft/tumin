@@ -50,6 +50,12 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
     + The minimum amount of validation transactions are 2. Weight equals to 3^(NumValidatedTransactions-2)
 * Accumulated weight
     + The sum of all the weights for the longest path to the genesis for a new transaction.
+* Address
+    + A Base58 representation of the public key
+* Public key
+    + A key derivated from a master public key
+* Private key
+    + A key derivated from the master private key 
     
 ### How it works
 
@@ -216,6 +222,6 @@ wait more time until newer transaction list comes, or start creating spam transa
     + It could be double spending in two tangles at some time. The double spending risk can be reduced checking that the transaction has validations from many other tangles
 
 #### We took ideas from
-* Iota Tangle
-* Bitcoin
-* Monero
+* [Iota Tangle](http://iotatangle.com)
+* [Bitcoin](http://bitcoin.org)
+* [Monero](http://getmonero.org)
