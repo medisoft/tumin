@@ -9,8 +9,8 @@ var min = bignum('00000000000000000000000000000000000000000000000000000000000000
 var txPerBlock = 20;
 var timePerBlock = 10000;
 var c = 0, f = 0;
-var tx = bignum(getNewTXID(),16);
 // var tx = bignum('4d40a0d68fc33bd2f53f3c7c00185103b6accc2a05467d4b92f71eb3790793ce', 16);
+var tx = bignum(getNewTXID(),16);
 var rl = tx.sub(min).div(txPerBlock);
 var rh = max.sub(tx).div(txPerBlock);
 console.log('txhash  ', tx.toString(16));
