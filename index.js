@@ -4,6 +4,9 @@ var bigint = require('bigintjs'),
     sha256 = require('crypto-js/sha256'),
     request = require('request-promise');
 
+// var MSupply = bignum.pow(2,64).sub(1).toString(10);
+// 703,687.4417 7663
+// console.log(MSupply);
 var max = bignum('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
 var min = bignum('0000000000000000000000000000000000000000000000000000000000000000', 16);
 var txPerBlock = 20;

@@ -56,6 +56,9 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
     + A key derivated from a master public key
 * Private key
     + A key derivated from the master private key 
+* Unit
+    + The base unit tumin is suggested as 100 million millions of minimum units
+    + 100,000,000,000,000
     
 ### How it works
 
