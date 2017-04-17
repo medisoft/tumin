@@ -141,22 +141,22 @@ The issuer of the transaction must have an input of funds, an output for funds a
 
 ```json
 TX = {
-  TXID: sha256OfTXData,
-  TXData: {
-    type: TransactionTypeIdentifier,
-    timestamp: UnixTimeStampWithMilliseconds,
-    inputs: ['TXID_1','TXID_2',...],
-    outputs: [
+  'TXID': 'sha256OfTXData',
+  'TXData': {
+    'type': 'TransactionTypeIdentifier',
+    'timestamp': 'UnixTimeStampWithMilliseconds',
+    'inputs': ['TXID_1','TXID_2',...],
+    'outputs': [
       {
-        address: addressOfReceiver,
-        amount: amountToReceive
+        'address': 'addressOfReceiver',
+        'amount': 'amountToReceive'
       },....
     ],
-    script: optionalBytecodeForSmartContract
+    'script': 'optionalBytecodeForSmartContract'
   },
-  ValidatesTXs: [ArrayOfTXIDsThatValidates],
-  hash: sha256OfEverythingExceptTheHashAndSignature,
-  signature: signatureOfTXData_by_all_the_required_keys
+  'ValidatesTXs': ['ArrayOfTXIDsThatValidates'],
+  'hash': 'sha256OfEverythingExceptTheHashAndSignature',
+  'signature': 'signatureOfTXData_by_all_the_required_keys'
 }
 ```
 
