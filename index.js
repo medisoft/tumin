@@ -2,12 +2,41 @@ var bigint = require('bigintjs'),
     bignum = require('bignum'),
     _ = require('lodash'),
     sha256 = require('crypto-js/sha256'),
-    request = require('request-promise');
+    request = require('request-promise'),
+    numeral = require('numeral');
 
 // var MSupply = bignum.pow(2,64).sub(1).toString(10);
-var MSupply = bignum.pow(2,53).sub(1).div(bignum.pow(10,14)).toString(10);
+// var MSupply = bignum.pow(2,53).sub(1).div(bignum.pow(10,14)).toString(10);
+var RewardDivisor = 22;
+var SupplyMultiplier = 53;
+var MSupply = bignum.pow(2, SupplyMultiplier).sub(1);
+var NumBlocks = bignum.pow(2, SupplyMultiplier - RewardDivisor);
 // var MSupply = bignum.pow(2,64).sub(1).div(bignum.pow(10,13)).toString(10);
-console.log(MSupply);
+console.log(`${numeral(bignum(2100000000000000)).format('0,0')} satoshis`)
+console.log(`${numeral(MSupply).format('0,0')} repartidas en ${numeral(NumBlocks).format('0,0')} bloques, el primero de ${numeral(MSupply.shiftRight(RewardDivisor)).format('0,0')}`)
+// console.log(`Equivalente a ${numeral(NumBlocks.div(86400*365.25)).format('0,0')} años`)
+// return;
+var A = bignum(0), b = 0;
+var BaseReward=bignum(0);
+// var _interval = setInterval(() => {
+while(true) {
+    BaseReward = MSupply.sub(A).shiftRight(RewardDivisor).add(1);
+    // if(BaseReward.lt(1)) BaseReward=1;
+    if (MSupply.sub(A).eq(0)) {
+    // if (false) {
+        // clearInterval(_interval);
+        return;
+    } else {
+        if (b % 100 == 0)
+            // console.log(`Reward ${numeral(BaseReward).format('0,0')}, already gave ${numeral(A).format('0,0')}, at block ${numeral(b).format('0,0')} eq ${numeral(b/(8640*365.25)).format('0,0.00')} years`)
+            console.log(`Reward ${numeral(BaseReward).format('0,0')}, already gave ${numeral(A).format('0,0')}, to give ${numeral(MSupply.sub(A)).format('0,0')} at block ${numeral(b).format('0,0')} eq ${numeral(b/(8640*365.25)).format('0,0.00')} years`)
+        b++;
+        A = A.add(BaseReward);
+    }
+}
+// }, 0);
+return;
+
 // 703,687.4417 7663
 var max = bignum('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
 var min = bignum('0000000000000000000000000000000000000000000000000000000000000000', 16);
@@ -15,7 +44,7 @@ var txPerBlock = 20;
 var timePerBlock = 10000;
 var c = 0, f = 0;
 // var tx = bignum('4d40a0d68fc33bd2f53f3c7c00185103b6accc2a05467d4b92f71eb3790793ce', 16);
-var tx = bignum(getNewTXID(),16);
+var tx = bignum(getNewTXID(), 16);
 var rl = tx.sub(min).div(txPerBlock);
 var rh = max.sub(tx).div(txPerBlock);
 console.log('txhash  ', tx.toString(16));
@@ -24,9 +53,9 @@ console.log('fromhigh', rh.toString(16));
 
 setInterval(() => {
     doBlock(tx, rl, rh, (hash) => {
-        if(hash) {
+        if (hash) {
             f++;
-            tx = bignum(getNewTXID(),16);
+            tx = bignum(getNewTXID(), 16);
             rl = tx.sub(min).div(txPerBlock);
             rh = max.sub(tx).div(txPerBlock);
             console.log('txhash  ', tx.toString(16));

@@ -123,15 +123,18 @@ RepeatUntil TransactionValidated
 
 ### Minting
 
-The absolute max Tumins are going to be 
+The absolute max Tumins are going to be (based on Javascript Max Safe Integer) with 8 decimals that is about 90 million coins. 
 ```math
 MSupply = 2^53-1
 ```
  
-The base reward for every minting transaction
+The base reward for every minting transaction is calculated and decreased with this formula:
 ```math
-BaseReward = (MSupply − A) >> 18
+BaseReward = (MSupply − A) >> 25
 ```
+
+
+An expected time for confirmation of `10 seconds` on average, with a time for total minting of about `212 years`.
 
 A minting transaction is basically a bet. The issuer of the mint transaction bets that the sha256 of all the TXIDs since it places the mint transaction until someone places a bet transaction (24 hours later at least) is going to have the lower difference from a random number into the mint transaction.
 
