@@ -15,6 +15,8 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
 * Low confirmation time with very low variance
 * Based on Directed Acyclid Graph or DAG
 * Without clear diference of roles
+* Human friendly accounts supported
+* Paper money bills
 
 ### Terminology and reference
 * Enredo (Tangle)
@@ -35,6 +37,8 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
     + This type of transaction transfers funds, have at least one input and at least one output
 * Smart Contract Transaction
     + This type of transaction is to be defined
+* Human Friendly Transaction
+    + An account that is a bridge for human friendly account transfer
 * Nonce
     + An integer used in spam transactions to modify its hash for validations.
 * Proof of Luck
@@ -59,6 +63,9 @@ Tumin is an experimental crypto coin that is enviromentally friendly, secure and
 * Unit
     + The base unit tumin is suggested as 90 million coins with 8 decimals distributed in about 200 years
 * Capable of paper money like bills
+    + Bills with good security and double spending protection
+* Human friendly account
+    + An account composed by only letters from A to Z, case insensitive
     
 ### How it works
 
@@ -232,6 +239,59 @@ wait more time until newer transaction list comes, or start creating spam transa
 
 The transactions must be checked to certain depth, at least 7 days depth and check the signatures and the correct validation of its validated transactions.
 
+
+### Human friendly accounts
+
+The address is derived from the sha256d of master public key, taking latest 16 hex digits and 
+then doing a ripemd160 on the 8 padded result to fit in 14 characters, and adding the latest hex digit as a verification digit of the account.
+
+Then it is converted to base25 (A to Z, the number 8, case insensitive)
+
+Let suppose that Alice wants to send money to Joe with account 8ABCDEFGHIJKLM
+
+She creates a Human Friendly Transaction (HFT) with the sha384d of the account plus a random nonce, and the amount to transfer and sends to the network.
+
+On the other side Joe (and others) are listening for the network and when a HFT transactions comes, they test with their master public key
+ to see if the sha384d of it plus the nonce is equal.
+ 
+If the result is true, Joe creates a new transfer transaction using the Alice's transaction as input, a new address from his 
+master public key as output, the master public key and signing the transaction with the recipient address.
+
+Because the human friendly account is shorter than a regular address, there is increased risk of collision.
+
+
+### Paper money bills
+
+A paper money bill is composed of two parts.
+
+* Verifier address
+    + It is used to check balance, last operation on that address, potential disposal requests
+* Dispose code
+    + Used to extract the funds of that bill
+    
+A DAO is required to issue this bills. The DAO, once created, will have full control of all Tumin deposited on it.
+
+Let suppose that a community wants to issue 1000 of 1 Tumin bills. They ask the DAO for an address to deposit that amount for that quantity of bills.
+
+The dao generates that address, and once the funds are registered and fully confirmed, it releases 
+1000 verifier addresses and 1000 disposal codes.
+
+Then the community can print that information into paper bills, and distribute them as they wish.
+
+To prevent double spending of the bills (double printing of them, o disposing the funds after spending the bill) the disposal request
+takes 30 days. The user ask the DAO for disposal of the funds with the dispose code, and the dao registers that.
+
+If between that time and the 30 days limit any action is issued on the verifier address (balance check, other disposal request), then all the 
+disposal requests are cancelled, as the bill should have only one owner until the latest disposal request is finished.
+
+If someone prints two or more copies of the bill, and distributes them, there is a lock based on time and distance from last action on
+the bill (balance check for example)
+
+If one receives the bill and checks the balance, the dao will register the time and coordinates of that action. And based on a formula (TBD, maybe standard deviation of all the transactions of bills of same value) the 
+DAO issues an alert if the bill was checked in a place that is too far from the current place of the bill, based on the 
+probability that the bill has travel that distance in that amount of time.
+
+Then the user must decide if he accepts that bill or denies it.
 
 ### Known possible problems
 

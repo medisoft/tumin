@@ -1,5 +1,11 @@
 <?php
 //die(format('2100000000000001'));
+//die(gmp_div(gmp_sub(gmp_pow(25,14),1),0x0f)."\n");
+//10,172,526,041
+//6,357,828,776,041
+//3,973,642,985,026,041
+// 99,341,074,625,651,041
+// 2,483,526,865,641,276,041
 $RewardDivisor = 25;
 $SupplyMultiplier = 53;
 $MSupply = gmp_sub(gmp_pow(2, $SupplyMultiplier), 1);

@@ -5,9 +5,16 @@ var bigint = require('bigintjs'),
     request = require('request-promise'),
     numeral = require('numeral');
 
+if (global.gc) {
+    global.gc();
+} else {
+    console.log('Garbage collection unavailable.  Pass --expose-gc '
+      + 'when launching node to enable forced garbage collection.');
+}
+//console.log(bignum.pow(26,14).sub(1).div(15).toString(16)); return // 3baf08037bf6d111
 // var MSupply = bignum.pow(2,64).sub(1).toString(10);
 // var MSupply = bignum.pow(2,53).sub(1).div(bignum.pow(10,14)).toString(10);
-var RewardDivisor = 22;
+var RewardDivisor = 25;
 var SupplyMultiplier = 53;
 var MSupply = bignum.pow(2, SupplyMultiplier).sub(1);
 var NumBlocks = bignum.pow(2, SupplyMultiplier - RewardDivisor);
@@ -25,11 +32,14 @@ while(true) {
     if (MSupply.sub(A).eq(0)) {
     // if (false) {
         // clearInterval(_interval);
+            console.log(`Reward ${numeral(BaseReward).format('0,0')}, already gave ${numeral(A).format('0,0')}, to give ${numeral(MSupply.sub(A)).format('0,0')} at block ${numeral(b).format('0,0')} eq ${numeral(b/(8640*365.25)).format('0,0.00')} years`)
         return;
     } else {
-        if (b % 100 == 0)
+        if (b % 50000 == 0) {
             // console.log(`Reward ${numeral(BaseReward).format('0,0')}, already gave ${numeral(A).format('0,0')}, at block ${numeral(b).format('0,0')} eq ${numeral(b/(8640*365.25)).format('0,0.00')} years`)
             console.log(`Reward ${numeral(BaseReward).format('0,0')}, already gave ${numeral(A).format('0,0')}, to give ${numeral(MSupply.sub(A)).format('0,0')} at block ${numeral(b).format('0,0')} eq ${numeral(b/(8640*365.25)).format('0,0.00')} years`)
+if(global.gc) global.gc();
+}
         b++;
         A = A.add(BaseReward);
     }
