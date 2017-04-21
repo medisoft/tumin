@@ -293,6 +293,32 @@ probability that the bill has travel that distance in that amount of time.
 
 Then the user must decide if he accepts that bill or denies it.
 
+
+### Smart Contracts
+
+The functionallity of smart contracts is a turin complete virtual machine embedded into the Tumin system.
+
+For this, in the first time a new smart contract is created and tested by the developer, then he creates an smart contract transaction that embeds the compiled
+code of the contract, and sends it to the network.
+
+The nodes receive it and once it is confirmed, it can be used. The contract must offer an API to consume their resources.
+
+Let suppose then that a user wants to consume a method called issue from an smart contract called PaperBill
+
+He creates a new smart contract transaction that consumes that method with the arguments, and tests into his own node until complete, to find out what will be the cost of that transaction.
+
+Then, creates a new transaction, and looks to add it to the network using a weight adjusted to the resources used by that call.
+
+The transaction is sent to the nodes, and then the nodes try to execute it using only the resources "paid" by the luck consumed to place that transaction.
+
+Let suppose that the call to the contract consumes 30 virtual machine steps, and that every 10 steps require 1 weight point.
+
+If the user sends the transaction with only a weight of 1, then it will fail to be added to the nodes, as the nodes will try to validate the transaction running it for only
+1 block of virtual machine steps. Then all that nodes will reject the transaction.
+
+If the user sends it with a weight of 9 then the nodes will run it to the end, and accept it and add to the tangle.
+
+
 ### Known possible problems
 
 * Double spending

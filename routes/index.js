@@ -48,8 +48,16 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Tumin Web Wallet' });
 });
 
-router.get('/hello', function(req, res, next) {
-  res.send({ title: 'Express' });
+router.get('/hi', function(req, res, next) {
+  res.json({ title: 'Express' });
+});
+
+router.get('/tangles', function(req, res, next) {
+  res.json({ title: 'Express' });
+});
+
+router.get('/txs', function(req, res, next) {
+  res.json({ title: 'Express' });
 });
 
 router.get('/props', function(req, res, next) {
