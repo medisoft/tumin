@@ -1,7 +1,7 @@
 var express = require('express');
 //var router = express.Router();
 var router = require('express-promise-router')();
-var level = require('level')('./tumin');
+var level = require('level')(process.env.DBNAME || './tumin');
 var db = require('level-promisify')(level);
 
 router.use(function timeLog(req, res) {

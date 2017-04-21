@@ -1,9 +1,11 @@
-//var app = require('express')();
 var app = require('./app');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+require('dotenv').load();
 
-server.listen(18000);
+
+console.log('Listening at port ',process.env.PORT || 18000);
+server.listen(process.env.PORT || 18000);
 
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
