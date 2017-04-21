@@ -20,8 +20,30 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('express-promise')());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('helmet')());
+
+
+var sess = {
+  secret: 'ShrafCiwadereuchOsirIntArjyaipdeuvShynlivkotocukvuOkunIrivtendAd',
+  resave: false,
+  saveUninitialized: true,
+  name: 'tumin',
+  cookie: { 
+	  secure: false,
+	  httpOnly: false,
+	  //domain: '',
+	  //path: '',
+	  expires: new Date( Date.now() + 60 * 60 * 1000 ) // 1 hour
+	  }
+};
+if (app.get('env') === 'production') {
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+}
+app.use(require('express-session')(sess))
 
 app.use('/', index);
 app.use('/users', users);
