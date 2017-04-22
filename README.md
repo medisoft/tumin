@@ -12,6 +12,7 @@ We found that the best way is an offer for earnly adopters and investors that is
 
 
 ### Main Features
+* Unique Proof of Luck (PoL) to validate transactions
 * No PoW - You do not require powerful CPU/GPU/ASIC to validate transactions.
 * No PoS - You do not require big amount of coins to validate transactions
 * No single blockchain. It uses multiple inheritance like trees.
@@ -27,6 +28,8 @@ We found that the best way is an offer for earnly adopters and investors that is
 * Without clear diference of roles
 * Human friendly accounts supported
 * Paper money bills
+* Smart Contracts
+
 
 ### Terminology and reference
 * Enredo (Tangle)
