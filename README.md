@@ -1,6 +1,16 @@
 # Tumin
 Tumin is an experimental crypto coin that is enviromentally friendly, secure and with fair distribution and usage.
 
+## ICO
+
+We want to develop a system and coin that be fair with everyone, but we need funding to fully dedicate to the development.
+
+So we thought what would be the best way for an Initial Coin Offer, that does not involve premining and that is attractive to early adopters and investors.
+
+We found that the best way is an offer for earnly adopters and investors that is very simple and logical: `10% of all the blocks divided proportionally to every early adopter.`
+
+
+
 ### Main Features
 * No PoW - You do not require powerful CPU/GPU/ASIC to validate transactions.
 * No PoS - You do not require big amount of coins to validate transactions
