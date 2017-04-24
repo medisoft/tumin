@@ -21,6 +21,7 @@
     "express-promise-router": "^1.1.1",
     "express-session": "^1.15.2",
     "helmet": "^3.5.0",
+    "js-binary": "^1.1.0",
     "less-middleware": "~2.2.0",
     "level": "^1.6.0",
     "level-promisify": "^2.0.1",

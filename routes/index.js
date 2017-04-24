@@ -64,6 +64,10 @@ router.get('/tx', function (req, res, next) {
     res.json(TX.toJSON());
 });
 
+router.get('/txb', function (req, res, next) {
+    res.json(TX.toBIN());
+});
+
 router.get('/txs', function (req, res, next) {
     res.json({title: 'Express'});
 });
