@@ -56,19 +56,25 @@ router.get('/hi', function (req, res, next) {
     res.json({version: Protocol.version});
 });
 
-router.get('/tangles', function (req, res, next) {
-    res.json({title: 'Express'});
-});
-
 router.get('/tx', function (req, res, next) {
-    var tx=new TX();
-    res.send(tx.toJSON());
+    var tx = new TX();
+    if (req.query.f && req.query.f == 'json')
+        res.send(tx.toJSON());
+    else
+        res.send(tx.toBIN());
+
 });
 
-router.get('/txb', function (req, res, next) {
-    var tx = new TX();
-    res.send(tx.toBIN());
+router.get('/fabric', function (req, res, next) {
+    var fabric = new Fabric();
+    fabric.attach(new TX());
+    fabric.attach(new TX());
+    if (req.query.f && req.query.f == 'json')
+        res.send(fabric.toJSON());
+    else
+        res.send(fabric.toBIN());
 });
+
 
 router.get('/txs', function (req, res, next) {
     res.json({title: 'Express'});

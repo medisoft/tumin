@@ -4,8 +4,7 @@
 var sha256 = require('crypto-js/sha256');
 var sha384 = require('crypto-js/sha384');
 var sha512 = require('crypto-js/sha512');
-var varint = require('varint'),
-    _ = require('lodash');
+var _ = require('lodash');
 var Type = require('../lib/js-binary').Type;
 
 const GENESIS = 0x00;
@@ -51,19 +50,24 @@ function TX() {
         features: FEATURES,
         txdata: {
             type: GENESIS,
-            timestamp: new Date().getTime(),
-            amount: 121983574
+            timestamp: new Date('2017-05-15 00:00:00').getTime()
         },
         vtxs: [],
         hash: null
     };
+    this.updateTX();
+    return this;
 }
 TX.prototype.updateTX = function () {
-    this.tx.txdata.timestamp = new Date('2017-05-15 00:00:00').getTime();
+    this.tx.txdata.timestamp = new Date().getTime()+Math.round(Math.random()*10);
     var txid = txdataSchema.encode(this.tx.txdata).toString('binary');
     var vtxs = vtxsSchema.encode(this.tx.vtxs).toString('binary');
     this.tx.txid = sha256(txid).toString()
     this.tx.hash = sha256(txid.concat(vtxs)).toString();
+}
+TX.prototype.get = function() {
+    this.updateTX();
+    return this.tx;
 }
 TX.prototype.toBIN = function () {
     this.tx.vtxs.push(sha256('1').toString())
