@@ -61,11 +61,13 @@ router.get('/tangles', function (req, res, next) {
 });
 
 router.get('/tx', function (req, res, next) {
-    res.json(TX.toJSON());
+    var tx=new TX();
+    res.send(tx.toJSON());
 });
 
 router.get('/txb', function (req, res, next) {
-    res.json(TX.toBIN());
+    var tx = new TX();
+    res.send(tx.toBIN());
 });
 
 router.get('/txs', function (req, res, next) {

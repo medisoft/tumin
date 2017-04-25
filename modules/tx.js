@@ -4,8 +4,9 @@
 var sha256 = require('crypto-js/sha256');
 var sha384 = require('crypto-js/sha384');
 var sha512 = require('crypto-js/sha512');
-var varint = require('varint');
-var Type = require('js-binary').Type;
+var varint = require('varint'),
+    _ = require('lodash');
+var Type = require('../lib/js-binary').Type;
 
 const GENESIS = 0x00;
 const SPAM = 0x01;
@@ -18,76 +19,72 @@ const HFT = 0x07;
 
 const F_GENESIS = 0;
 const F_SPAM = 1;
+const FEATURES = [F_GENESIS, F_SPAM];
+const INTTYPE='uint';
+const txdata = {
+    type: INTTYPE,
+    timestamp: INTTYPE,
+    'nonce?': INTTYPE,
+    'amount?': INTTYPE,
+    'in?': ['hex'],
+    'out?': ['hex'],
+    'bet?': 'hex',
+    'betKey?': 'hex'
+};
+const vtxs = ['hex'];
+const tx = {
+    txid: 'hex', // sha256 of txdata
+    features: [INTTYPE],
+    txdata: txdata,
+    'vtxs?': vtxs, // txid of the two transactions that validates
+    'hash?': 'hex', // sha256 of txid plus ids in vtxs
+    'sign?': 'hex' // signature of the hash by all the required keys
+};
 
-var txSchema = new Type({
-    txid: 'Buffer',
-    features: ['uint'],
-    txdata: {
-        type: 'uint',
-        timestamp: 'Buffer',
-        'nonce?': 'Buffer',
-        'amount?': 'Buffer',
-        'in?': ['Buffer'],
-        'out?': ['Buffer'],
-        'bet?': 'Buffer',
-        'betKey?': 'Buffer'
-    },
-    validatetxs: ['Buffer'],
-    hash: 'Buffer',
-    'signature?': 'Buffer'
-});
+const txdataSchema = new Type(txdata);
+const vtxsSchema = new Type(vtxs);
+const txSchema = new Type(tx);
 
-module.exports = {
-    tx: {
-        txid: undefined, // sha256 Of TXData
-        features: undefined,
+function TX() {
+    this.tx = {
+        txid: null,
+        features: FEATURES,
         txdata: {
             type: GENESIS,
             timestamp: new Date().getTime(),
+            amount: 121983574
         },
-        validatestxs: [
-            sha256('1').toString(),
-            sha256('2').toString(),
-        ],
-        hash: undefined, // sha256OfEverythingExceptTheHashAndSignature"
-        signature: undefined // signatureOfTXData_by_all_the_required_keys
-    },
-    toJSON: function () {
-        this.tx.txdata.timestamp = new Date().getTime();
-        this.tx.txdata.nonce = Math.random() * Math.pow(10, 18);
-        this.tx.txid = sha256(this.tx.txdata).toString();
-        this.tx.hash = sha256(this.tx.txid + this.tx.validatestxs).toString();
-        this.tx.normal = 0x12401;
-        this.tx.encoded = varint.encode(this.tx.normal);
-        this.tx.decoded = varint.decode(this.tx.encoded);
-        return JSON.stringify(this.tx);
-    }
-    ,
-    toBIN: function () {
-        this.tx.txdata.timestamp = new Buffer(varint.encode(new Date().getTime()));
-        this.tx.txdata.nonce = new Buffer(varint.encode(Math.random() * Math.pow(10, 18)));
-        this.tx.txdata.amount = new Buffer(varint.encode(85874763245));
-        this.tx.features = [F_GENESIS, F_SPAM];
-        this.tx.txid = new Buffer(sha256(this.tx.txdata).toString(), 'hex');
-        this.tx.validatetxs = [
-            new Buffer(sha256('1').toString(), 'hex'),
-            new Buffer(sha256('2').toString(), 'hex')
-        ]
-
-        this.tx.txdata.in = [
-            new Buffer(sha256('source1').toString(), 'hex'),
-            new Buffer(sha256('source2').toString(), 'hex'),
-        ];
-        this.tx.txdata.out = [
-            new Buffer(sha256('recipient').toString(), 'hex'),
-            new Buffer(sha256('change').toString(), 'hex'),
-        ];
-
-        this.tx.txdata.bet = new Buffer(sha256(Math.random()).toString(), 'hex');
-        this.tx.txdata.betKey = new Buffer(sha256(Math.random()).toString(), 'hex');
-
-        this.tx.hash = new Buffer(sha256(this.tx.txid + this.tx.validatestxs).toString());
-        this.tx.signature = new Buffer(sha384(this.tx.hash).toString());
-        return txSchema.encode(this.tx).length;
-    }
+        vtxs: [],
+        hash: null
+    };
 }
+TX.prototype.updateTX = function () {
+    this.tx.txdata.timestamp = new Date('2017-05-15 00:00:00').getTime();
+    var txid = txdataSchema.encode(this.tx.txdata).toString('binary');
+    var vtxs = vtxsSchema.encode(this.tx.vtxs).toString('binary');
+    this.tx.txid = sha256(txid).toString()
+    this.tx.hash = sha256(txid.concat(vtxs)).toString();
+}
+TX.prototype.toBIN = function () {
+    this.tx.vtxs.push(sha256('1').toString())
+    this.tx.vtxs.push(sha256('2').toString())
+    this.updateTX();
+    // return txSchema.decode(Buffer.from(txSchema.encode(this.tx).toString('binary'),'binary'));
+    return txSchema.encode(this.tx).toString('binary');
+}
+
+TX.prototype.toJSON = function () {
+    this.tx.vtxs.push(sha256('1').toString())
+    this.tx.vtxs.push(sha256('2').toString())
+    this.updateTX();
+    return JSON.stringify(this.tx);
+}
+
+TX.prototype.setType = function (type) {
+    this.tx.txdata.type = type;
+}
+TX.prototype.setVTX = function (vtx) {
+    this.tx.vtxs.push(new Buffer(vtx, 'hex'));
+}
+
+module.exports = TX;
