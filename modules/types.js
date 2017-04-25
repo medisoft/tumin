@@ -27,20 +27,22 @@ const txdata = {
     'betKey?': 'hex'
 };
 const vtxs = ['hex'];
+const features = [INTTYPE];
 const tx = {
     txid: 'hex', // sha256 of txdata
-    features: [INTTYPE],
+    features: features,
     txdata: txdata,
     'vtxs?': vtxs, // txid of the two transactions that validates
     'hash?': 'hex', // sha256 of txid plus ids in vtxs
     'sign?': 'hex' // signature of the hash by all the required keys
 };
-
 const txdataSchema = new Type(txdata);
 const vtxsSchema = new Type(vtxs);
 const txSchema = new Type(tx);
+const featuresSchema = new Type(features);
 
 
 module.exports.txdataSchema = txdataSchema;
 module.exports.vtxsSchema = vtxsSchema;
 module.exports.txSchema = txSchema;
+module.exports.featuresSchema = featuresSchema;

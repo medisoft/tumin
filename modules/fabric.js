@@ -3,6 +3,8 @@
  */
 var _ = require('lodash'),
     varint = require('varint');
+
+var types = require('./types');
 function Fabric() {
     this.fabric = {
         features: [1,2],
@@ -22,7 +24,8 @@ Fabric.prototype.toJSON = function () {
     return JSON.stringify(this.fabric);
 }
 Fabric.prototype.toBIN = function () {
-    var ret;
+    // var ret=new Buffer(types);
+/*
     _.each(this.fabric.features, function(v,k) {
         if(!ret) ret=new Buffer(varint.encode(v));
         else ret=Buffer.concat([ret,new Buffer(varint.encode(v))]);
@@ -31,6 +34,9 @@ Fabric.prototype.toBIN = function () {
         if(!ret) ret=new Buffer(v.toBIN());
         else ret=Buffer.concat([ret,new Buffer(v.toBIN())]);
     })
-    return ret;
+*/
+// console.log(this.fabric);
+// ret=types.fabricSchema.encode(this.fabric);
+    return this.fabric;
 }
 module.exports = Fabric;
