@@ -1,6 +1,6 @@
 {
   "name": "tumin",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Tumin is an experimental crypto coin that is enviromentally friendly, secure and fair with working people",
   "private": false,
   "main": "index.js",
@@ -52,6 +52,6 @@
   },
   "preferGlobal": "true",
   "bin": {
-    "tumin" : "index.js"
+    "tumin": "index.js"
   }
 }
