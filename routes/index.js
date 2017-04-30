@@ -1,8 +1,8 @@
 var express = require('express');
 //var router = express.Router();
 var router = require('express-promise-router')();
-var level = require('level')(process.env.DBNAME || './tumin');
-var db = require('level-promisify')(level);
+// var level = require('level')(process.env.DBNAME || './tumin');
+// var db = require('level-promisify')(level);
 
 var Protocol = require('../modules/protocol'),
     TX = require('../modules/tx'),
@@ -22,6 +22,7 @@ function requireAuth(req, res) {
     return Promise.resolve('next');
 }
 
+/*
 function store(req, res, next) {
     return db.put('user', JSON.stringify(req.session.user))
         .then(function () {
@@ -43,10 +44,13 @@ function retrive(req, res) {
         });
 }
 
+*/
+/*
 function work(req, res) {
     req.session.user.views++;
     return Promise.resolve('next');
 }
+*/
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('index', {title: 'Tumin Web Wallet'});
@@ -67,14 +71,14 @@ router.get('/tx', function (req, res, next) {
 
 router.get('/fabric', function (req, res, next) {
     var fabric = new Fabric();
-    fabric.attach(new TX());
-    fabric.attach(new TX());
-    if (req.query.f && req.query.f == 'json')
-        res.send(fabric.toJSON());
-    else
-        res.send(fabric.toBIN());
+    res.send(fabric.status());
 });
 
+router.get('/attach', function (req, res, next) {
+    var fabric = new Fabric();
+    fabric.attach(new TX());
+    res.send({response:true})
+});
 
 router.get('/txs', function (req, res, next) {
     res.json({title: 'Express'});
@@ -84,7 +88,9 @@ router.get('/props', function (req, res, next) {
     res.send({title: 'Express'});
 });
 
+/*
 router.get('/url', retrive, requireAuth, work, store, function (req, res) {
     res.send({title: 'URL', s: req.session.id, user: req.session.user});
 });
+*/
 module.exports = router;

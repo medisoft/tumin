@@ -49,5 +49,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/medisoft/tumin.git"
+  },
+  "preferGlobal": "true",
+  "bin": {
+    "tumin" : "index.js"
   }
 }

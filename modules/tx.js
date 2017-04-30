@@ -59,7 +59,7 @@ function TX() {
     return this;
 }
 TX.prototype.updateTX = function () {
-    this.tx.txdata.timestamp = new Date().getTime()+Math.round(Math.random()*10);
+    this.tx.txdata.timestamp = new Date().getTime();
     var txid = txdataSchema.encode(this.tx.txdata).toString('binary');
     var vtxs = vtxsSchema.encode(this.tx.vtxs).toString('binary');
     this.tx.txid = sha256(txid).toString()
@@ -70,8 +70,8 @@ TX.prototype.get = function() {
     return this.tx;
 }
 TX.prototype.toBIN = function () {
-    this.tx.vtxs.push(sha256('1').toString())
-    this.tx.vtxs.push(sha256('2').toString())
+    // this.tx.vtxs.push(sha256('1').toString())
+    // this.tx.vtxs.push(sha256('2').toString())
     this.updateTX();
     // return txSchema.decode(Buffer.from(txSchema.encode(this.tx).toString('binary'),'binary'));
     return txSchema.encode(this.tx).toString('binary');
@@ -90,5 +90,11 @@ TX.prototype.setType = function (type) {
 TX.prototype.setVTX = function (vtx) {
     this.tx.vtxs.push(new Buffer(vtx, 'hex'));
 }
+TX.prototype.isValid = function (tx) {
+    return true;
+};
+TX.prototype.isGenesis = function (tx) {
+    return this.tx.txdata.type==GENESIS;
+};
 
 module.exports = TX;
