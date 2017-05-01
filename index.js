@@ -1,4 +1,8 @@
 #! /usr/bin/env node
+console.log(process.argv);
+var userArgs = process.argv.slice(2);
+var searchParam = userArgs[0];
+
 var app = require('./app');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
