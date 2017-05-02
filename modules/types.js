@@ -2,6 +2,7 @@
  * Created by mario on 25/04/17.
  */
 var Type = require('../lib/js-binary').Type;
+var bignum = require('bignum');
 
 const GENESIS = 0x00;
 const SPAM = 0x01;
@@ -11,6 +12,24 @@ const MINTCLAIM = 0x04;
 const TRANSFER = 0x05;
 const SMART = 0x06;
 const HFT = 0x07;
+module.exports.GENESIS = GENESIS;
+module.exports.SPAM = SPAM;
+module.exports.MINT = MINT;
+module.exports.BET = BET;
+module.exports.MINTCLAIM = MINTCLAIM;
+module.exports.TRANSFER = TRANSFER;
+module.exports.SMART = SMART;
+module.exports.HFT = HFT;
+
+module.exports.TimePerBlock = 10000;
+module.exports.RewardDivisor = 25;
+module.exports.SupplyMultiplier = 53;
+module.exports.MSupply = bignum.pow(2, module.exports.SupplyMultiplier).sub(1);
+module.exports.NumBlocks = bignum.pow(2, module.exports.SupplyMultiplier - module.exports.RewardDivisor);
+
+module.exports.MAX = bignum('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
+module.exports.MIN = bignum('0000000000000000000000000000000000000000000000000000000000000000', 16);
+module.exports.VTXS_COUNT = 2;
 
 const F_GENESIS = 0;
 const F_SPAM = 1;

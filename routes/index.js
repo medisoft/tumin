@@ -23,29 +23,6 @@ function requireAuth(req, res) {
 }
 
 /*
-function store(req, res, next) {
-    return db.put('user', JSON.stringify(req.session.user))
-        .then(function () {
-            return Promise.resolve('next');
-        })
-        .catch(function (err) {
-            return Promise.reject(err);
-        });
-}
-
-function retrive(req, res) {
-    return db.get('user')
-        .then(function (value) {
-            req.session.user = JSON.parse(value);
-            return Promise.resolve('next');
-        })
-        .catch(function (err) {
-            return Promise.reject(err);
-        });
-}
-
-*/
-/*
 function work(req, res) {
     req.session.user.views++;
     return Promise.resolve('next');
@@ -60,8 +37,10 @@ router.get('/hi', function (req, res, next) {
     res.json({version: Protocol.version});
 });
 
-router.get('/tx', function (req, res, next) {
-    var tx = new TX();
+router.get('/tx/:txid', function (req, res, next) {
+    var tx = new Fabric().gettx(req.params.txid);
+    return res.send(tx);
+
     if (req.query.f && req.query.f == 'json')
         res.send(tx.toJSON());
     else
@@ -74,11 +53,18 @@ router.get('/fabric', function (req, res, next) {
     res.send(fabric.status());
 });
 
+router.get('/genesis', function (req, res, next) {
+    var fabric = new Fabric();
+    res.send(fabric.genesis());
+});
+
+/*
 router.get('/attach', function (req, res, next) {
     var fabric = new Fabric();
     fabric.attach(new TX());
     res.send({response:true})
 });
+*/
 
 router.get('/txs', function (req, res, next) {
     res.json({title: 'Express'});

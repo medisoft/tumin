@@ -6,6 +6,11 @@ var sha384 = require('crypto-js/sha384');
 var sha512 = require('crypto-js/sha512');
 var _ = require('lodash');
 var Type = require('../lib/js-binary').Type;
+var bignum = require('bignum'),
+    numeral = require('numeral'),
+    types = require('./types');
+
+
 
 const GENESIS = 0x00;
 const SPAM = 0x01;
@@ -19,10 +24,10 @@ const HFT = 0x07;
 const F_GENESIS = 0;
 const F_SPAM = 1;
 const FEATURES = [F_GENESIS, F_SPAM];
-const INTTYPE='uint';
+const INTTYPE = 'uint';
 const txdata = {
     type: INTTYPE,
-    timestamp: INTTYPE,
+    createdAt: INTTYPE,
     'nonce?': INTTYPE,
     'amount?': INTTYPE,
     'in?': ['hex'],
@@ -43,29 +48,29 @@ const tx = {
 const txdataSchema = new Type(txdata);
 const vtxsSchema = new Type(vtxs);
 const txSchema = new Type(tx);
-
-function TX() {
-    this.tx = {
-        txid: null,
-        features: FEATURES,
-        txdata: {
-            type: GENESIS,
-            timestamp: new Date('2017-05-15 00:00:00').getTime()
-        },
-        vtxs: [],
-        hash: null
-    };
+const EMPTY_TRANSACTION = {
+    txid: null,
+    features: FEATURES,
+    txdata: {
+        type: GENESIS,
+        // createdAt: new Date('2017-05-15 00:00:00').getTime()
+    },
+    vtxs: [],
+    hash: null
+};
+function TX(tx = EMPTY_TRANSACTION) {
+    this.tx = tx;
     this.updateTX();
     return this;
 }
 TX.prototype.updateTX = function () {
-    this.tx.txdata.timestamp = new Date().getTime();
+    if(!this.tx.txdata.createdAt) this.tx.txdata.createdAt = new Date().getTime();
     var txid = txdataSchema.encode(this.tx.txdata).toString('binary');
     var vtxs = vtxsSchema.encode(this.tx.vtxs).toString('binary');
     this.tx.txid = sha256(txid).toString()
     this.tx.hash = sha256(txid.concat(vtxs)).toString();
 }
-TX.prototype.get = function() {
+TX.prototype.get = function () {
     this.updateTX();
     return this.tx;
 }
@@ -86,15 +91,61 @@ TX.prototype.toJSON = function () {
 
 TX.prototype.setType = function (type) {
     this.tx.txdata.type = type;
+    this.updateTX();
 }
+
+TX.prototype.setNonce = function (nonce) {
+    this.tx.txdata.nonce = nonce;
+    this.updateTX();
+}
+
 TX.prototype.setVTX = function (vtx) {
     this.tx.vtxs.push(new Buffer(vtx, 'hex'));
 }
-TX.prototype.isValid = function (tx) {
+TX.prototype.isValid = function () {
     return true;
 };
-TX.prototype.isGenesis = function (tx) {
-    return this.tx.txdata.type==GENESIS;
+TX.prototype.isGenesis = function () {
+    return this.tx.txdata.type == GENESIS;
 };
 
+TX.prototype.validate = function (vtxs, txPerBlock) {
+    var self=this;
+    var _vtxs;
+    var tini=new Date().getTime(), i=0;
+    vtxs=_.shuffle(vtxs);
+    do {
+        i++;
+        _vtxs=[];
+        // Calculate new nonce and update the transaction
+        this.setNonce(parseInt(Math.random() * Math.pow(10, 15)));
+        var txid = bignum(self.tx.txid, 16);
+
+        // Calculate range
+        var rl = txid.sub(types.MIN).div(txPerBlock);
+        var rh = types.MAX.sub(txid).div(txPerBlock);
+        // console.log('nonce', self.tx.txdata.nonce, 'rl', rl, 'rh', rh)
+
+        // Find a pair of vtxs within the range
+        _.each(vtxs, function (v, k) {
+            if (_vtxs.length == types.VTXS_COUNT) {
+                self.tx.vtxs = _vtxs;
+                return true;
+            }
+            var vtxid = bignum(v.txid, 16);
+            // console.log(vtxid);
+            if (vtxid.ge(rl) && vtxid.le(rh)) {
+                // console.log(`vtxid ${_vtxs.length+1}`, v.txid)
+                _vtxs.push(v.txid);
+            }
+        })
+    } while(_vtxs.length<types.VTXS_COUNT && new Date().getTime()-tini<=types.TimePerBlock);
+    // If found, add to the tx and return true, if not, return false
+    if(_vtxs.length==types.VTXS_COUNT) {
+        self.tx.vtxs=_vtxs;
+        console.log(`Encontro ${_vtxs} en ${i} intentos`);
+        return true;
+    }
+    return false;
+}
 module.exports = TX;
