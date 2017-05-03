@@ -15,10 +15,11 @@ var fabric = new Fabric();
 if (_.indexOf(userArgs, '--start-genesis') >= 0) {
     console.log('Creating new genesis transaction');
     fabric.attach(new TX());
+    return;
 }
 
-setInterval(function() { fabric.generateSPAM()}, types.TimePerBlock);
-// fabric.generateSPAM();
+// setInterval(function() { fabric.generateSPAM()}, types.TimePerBlock);
+fabric.generateSPAM();
 
 console.log('Listening at port ', process.env.PORT || 18000);
 server.listen(process.env.PORT || 18000);

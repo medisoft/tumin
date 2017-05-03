@@ -109,11 +109,10 @@ TX.prototype.isGenesis = function () {
     return this.tx.txdata.type == GENESIS;
 };
 
-TX.prototype.validate = function (vtxs, txPerBlock) {
+TX.prototype.validate = function (vtxs, difficulty) {
     var self=this;
     var _vtxs;
     var tini=new Date().getTime(), i=0;
-    vtxs=_.shuffle(vtxs);
     do {
         i++;
         _vtxs=[];
@@ -122,8 +121,8 @@ TX.prototype.validate = function (vtxs, txPerBlock) {
         var txid = bignum(self.tx.txid, 16);
 
         // Calculate range
-        var rl = txid.sub(types.MIN).div(txPerBlock);
-        var rh = types.MAX.sub(txid).div(txPerBlock);
+        var rl = txid.sub(types.MIN).div(difficulty);
+        var rh = types.MAX.sub(txid).div(difficulty);
         // console.log('nonce', self.tx.txdata.nonce, 'rl', rl, 'rh', rh)
 
         // Find a pair of vtxs within the range
@@ -143,9 +142,11 @@ TX.prototype.validate = function (vtxs, txPerBlock) {
     // If found, add to the tx and return true, if not, return false
     if(_vtxs.length==types.VTXS_COUNT) {
         self.tx.vtxs=_vtxs;
-        console.log(`Encontro ${_vtxs} en ${i} intentos`);
+        // console.log(`Encontro ${_vtxs} en ${i} intentos`);
+        console.log(`Did ${i} tries to find VTXS`);
         return true;
     }
+    console.log(`Didn't found VTXS after ${i} tries`);
     return false;
 }
 module.exports = TX;

@@ -21,7 +21,7 @@ module.exports.TRANSFER = TRANSFER;
 module.exports.SMART = SMART;
 module.exports.HFT = HFT;
 
-module.exports.TimePerBlock = 10000;
+module.exports.TimePerBlock = 10000; // 10 seconds in miliseconds
 module.exports.RewardDivisor = 25;
 module.exports.SupplyMultiplier = 53;
 module.exports.MSupply = bignum.pow(2, module.exports.SupplyMultiplier).sub(1);
@@ -30,6 +30,10 @@ module.exports.NumBlocks = bignum.pow(2, module.exports.SupplyMultiplier - modul
 module.exports.MAX = bignum('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16);
 module.exports.MIN = bignum('0000000000000000000000000000000000000000000000000000000000000000', 16);
 module.exports.VTXS_COUNT = 2;
+
+module.exports.LONG_PERIOD = 86400 * 1000; // One day
+module.exports.SHORT_PERIOD = 3600 * 1000; // One hour
+module.exports.MINIMUM_TXPERBLOCK = 1;
 
 const F_GENESIS = 0;
 const F_SPAM = 1;
