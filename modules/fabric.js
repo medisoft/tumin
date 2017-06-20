@@ -289,8 +289,8 @@ Fabric.prototype.generateSPAM = function () {
             // difficulty = Math.max(0.5,_short) / Math.max(1,(_avg<=0?1:_avg)); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
             difficulty = Math.max(1,_short) / Math.max(types.MINIMUM_TXPERBLOCK,(_avg<=0?1:_avg)); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
             if (difficulty <= 0) difficulty = 1;
-            difficulty=Math.exp(difficulty);
-            console.log(`Creating a new SPAM transaction from ${vtxs.length} pool with difficulty of ${difficulty} with Short ${_short} and Long ${_avg}`);
+            if(difficulty>1) difficulty=Math.exp(difficulty);
+            console.log(`${new Date()}: Creating a new SPAM transaction from ${vtxs.length} pool with difficulty of ${difficulty} with Short ${_short} and Long ${_avg}`);
             _tx = new TX();
             _tx.setType(types.SPAM);
             if (_tx.validate(vtxs, difficulty)) {

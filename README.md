@@ -338,7 +338,7 @@ If the user sends it with a weight of 9 then the nodes will run it to the end, a
     + It could be double spending in two tangles at some time. The double spending risk can be reduced checking that the transaction has validations from many other tangles
 
 #### We took ideas from
-* [Iota Tangle](http://iotatangle.com)
+* [Iota Tangle](http://iota.org)
 * [Bitcoin](http://bitcoin.org)
 * [Monero](http://getmonero.org)
 
@@ -347,3 +347,24 @@ If the user sends it with a weight of 9 then the nodes will run it to the end, a
 
 ### Author
 Mario Alberto Medina Nussbaum
+
+
+### TODO
+
+#### Prevent high CPU power spam transactions to fill the fabric 
+* Calculate the 24 hour average of TX/second on every fabric 
+* Calculate max hash rate of a node at startup
+* Divide that hash rate by the total of TXs per fabric to assign a max quota of hashes per spam transaction
+* Reject any new spam transaction that exceeds that limit
+    + If 70% of neigbours are offering me a spam tx that exceeds that limit, well, accept it
+
+#### Prevent fabric bloating with too much transactions that are not normal organic growth
+* Use the 24 hour average of TXs plus a 10% to limit the amount of new TX received per fabric
+    + The 10% is arbitrary, it could be 1 standard deviation instead of 10%
+    + It includes normal TX and spam ones
+* If a light node exceeds that limit, then punish it rejecting the transactions
+* If it is a neigbour that exceeds, then punish it by blocking it for a while with a black list
+
+
+#### Change to Curl for quantum proof
+* Replace non quantum proof hashes with others that are quantum proof

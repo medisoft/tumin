@@ -110,9 +110,10 @@ TX.prototype.isGenesis = function () {
 };
 
 TX.prototype.validate = function (vtxs, difficulty) {
-    var self=this;
-    var _vtxs;
-    var tini=new Date().getTime(), i=0;
+    let self=this;
+    let _vtxs;
+    let tini=new Date().getTime(), i=0;
+    let tend=tini+types.SHORT_PERIOD;
     do {
         i++;
         _vtxs=[];
@@ -138,15 +139,20 @@ TX.prototype.validate = function (vtxs, difficulty) {
                 _vtxs.push(v.txid);
             }
         })
-    } while(_vtxs.length<types.VTXS_COUNT && new Date().getTime()-tini<=types.TimePerBlock);
+        if(new Date().getTime()-tini>types.TimePerBlock) {
+            tini=new Date().getTime();
+            console.log(`${new Date()}: Didn't found VTXS after ${i} tries`);
+        }
+    // } while(_vtxs.length<types.VTXS_COUNT);
+    } while(_vtxs.length<types.VTXS_COUNT && new Date().getTime()<tend);
     // If found, add to the tx and return true, if not, return false
     if(_vtxs.length==types.VTXS_COUNT) {
         self.tx.vtxs=_vtxs;
         // console.log(`Encontro ${_vtxs} en ${i} intentos`);
-        console.log(`Did ${i} tries to find VTXS`);
+        console.log(`${new Date()}: Did ${i} tries to find VTXS`);
         return true;
     }
-    console.log(`Didn't found VTXS after ${i} tries`);
+    console.log(`${new Date()}: There was an error. Didn't found VTXS after ${i} tries`);
     return false;
 }
 module.exports = TX;
