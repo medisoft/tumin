@@ -348,7 +348,6 @@ If the user sends it with a weight of 9 then the nodes will run it to the end, a
 ### Author
 Mario Alberto Medina Nussbaum
 
-
 ### TODO
 
 #### Prevent high CPU power spam transactions to fill the fabric 
