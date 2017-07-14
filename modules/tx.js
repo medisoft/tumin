@@ -4,7 +4,8 @@
 var sha256 = require('crypto-js/sha256');
 var sha384 = require('crypto-js/sha384');
 var sha512 = require('crypto-js/sha512');
-var _ = require('lodash');
+var _ = require('lodash')
+    , mongoose = require('mongoose'), Schema=mongoose.Schema;
 var Type = require('../lib/js-binary').Type;
 var bignum = require('bignum'),
     numeral = require('numeral'),
@@ -24,6 +25,55 @@ const HFT = 0x07;
 const F_GENESIS = 0;
 const F_SPAM = 1;
 const FEATURES = [F_GENESIS, F_SPAM];
+
+
+const schema = new Schema({
+    txid:    String,
+    binary:  Buffer,
+    living:  Boolean,
+    updated: { type: Date, default: Date.now },
+    age:     { type: Number, min: 18, max: 65 },
+    mixed:   Schema.Types.Mixed,
+    _someId: Schema.Types.ObjectId,
+    array:      [],
+    ofString:   [String],
+    ofNumber:   [Number],
+    ofDates:    [Date],
+    ofBuffer:   [Buffer],
+    ofBoolean:  [Boolean],
+    ofMixed:    [Schema.Types.Mixed],
+    ofObjectId: [Schema.Types.ObjectId],
+    nested: {
+        stuff: { type: String, lowercase: true, trim: true }
+    }
+});
+const txdata = new Schema({
+    type: { type: Number },
+    createdAt: { type: Number },
+    nonce: { type: Number },
+    in: [String],
+    out: [String],
+    bet: String,
+    betKey: String
+});
+
+const vtxs = new Schema([String]);
+
+const tx = new Schema({
+    txid: {type: String},
+    features: [Number],
+    txdata: txdata,
+    vtxs: vtxs,
+    hash: String,
+    sign: String
+});
+
+const Transaction = mongoose.model('tx', schema);
+
+const t=new Transaction;
+t.txid='aldsfj';
+t.save();
+
 const INTTYPE = 'uint';
 const txdata = {
     type: INTTYPE,

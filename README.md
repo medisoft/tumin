@@ -46,6 +46,7 @@ We found that the best way is an offer for earnly adopters and investors that is
     + This type of transaction claims reward or releases bet funds 
 * Spam Transaction
     + This type of transaction does not have inputs or outputs, only a nonce
+    + DEPRECATED IDEA, it is not required because the TXID will change with time until it finds the appropiate other TXIDs
 * Transfer Transaction
     + This type of transaction transfers funds, have at least one input and at least one output
 * Smart Contract Transaction

@@ -4,7 +4,13 @@
 var _ = require('lodash'),
     varint = require('varint'),
     Q = require('q'),
-    TX = require('./tx');
+    TX = require('./tx'),
+    mongoose = require('mongoose'), Schema=mongoose.Schema;
+
+mongoose.connect('mongodb://localhost/tumin');
+
+
+
 
 var Datastore = require('nedb'), path = require('path'), db = {
     genesis: new Datastore({filename: path.join('tumin', 'genesis.db'), autoload: true}),
@@ -283,13 +289,13 @@ Fabric.prototype.generateSPAM = function () {
                 return self.generateSPAM(false);
             }
             // vtxs = _.shuffle(vtxs);
-            vtxs = _.sortBy(vtxs,'links').reverse();
+            vtxs = _.sortBy(vtxs, 'links').reverse();
             // difficulty = _short / Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
             // difficulty = _short / (_avg<=0?1:_avg); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
             // difficulty = Math.max(0.5,_short) / Math.max(1,(_avg<=0?1:_avg)); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
-            difficulty = Math.max(1,_short) / Math.max(types.MINIMUM_TXPERBLOCK,(_avg<=0?1:_avg)); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
+            difficulty = Math.max(1, _short) / Math.max(types.MINIMUM_TXPERBLOCK, (_avg <= 0 ? 1 : _avg)); //Math.max(_avg, types.MINIMUM_TXPERBLOCK) * types.TimePerBlock / 1000;
             if (difficulty <= 0) difficulty = 1;
-            if(difficulty>1) difficulty=Math.exp(difficulty);
+            if (difficulty > 1) difficulty = Math.exp(difficulty);
             console.log(`${new Date()}: Creating a new SPAM transaction from ${vtxs.length} pool with difficulty of ${difficulty} with Short ${_short} and Long ${_avg}`);
             _tx = new TX();
             _tx.setType(types.SPAM);
